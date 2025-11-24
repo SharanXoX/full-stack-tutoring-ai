@@ -1,0 +1,12 @@
+Uploading test_summary_doc.txt...
+Upload successful!
+File ID: test_summary_doc_20251124_172826.txt
+
+Summarizing file_id: test_summary_doc_20251124_172826.txt...
+Summarize successful!
+{
+  "summary": "Error generating summary",
+  "key_points": [],
+  "file_id": "test_summary_doc_20251124_172826.txt"
+}
+Response structure is valid.

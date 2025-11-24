@@ -1,0 +1,4 @@
+/* src/styles.css */
+body { font-family: Inter, Arial, sans-serif; padding: 0; margin: 0; }
+a { color: #0b5fff; text-decoration: none; }
+nav a { margin-right: 8px; }

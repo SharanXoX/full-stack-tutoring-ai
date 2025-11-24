@@ -1,0 +1,6 @@
+
+    Photosynthesis is the process by which green plants and some other organisms use sunlight to synthesize foods with the aid of chlorophyll. 
+    Photosynthesis in plants generally involves the green pigment chlorophyll and generates oxygen as a byproduct.
+    The process of photosynthesis is commonly written as: 6CO2 + 6H2O -> C6H12O6 + 6O2.
+    This means that the reactants, six carbon dioxide molecules and six water molecules, are converted by light energy captured by chlorophyll into a sugar molecule and six oxygen molecules, the products.
+    
