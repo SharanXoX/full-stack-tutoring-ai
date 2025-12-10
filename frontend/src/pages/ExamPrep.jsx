@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAppContext } from "../context/AppContext";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { useLocation } from "react-router-dom";
 
 export default function ExamPrep() {
   const { topic, uploadedFile } = useAppContext();
@@ -9,6 +10,9 @@ export default function ExamPrep() {
   const [quiz, setQuiz] = useState(null);
   const [error, setError] = useState(null);
   
+  const location = useLocation();
+  const hasAutoStarted = useRef(false);
+
   // Quiz taking state
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -19,6 +23,17 @@ export default function ExamPrep() {
     if (topic) setCustomTopic(topic);
   }, [topic]);
 
+  // Auto-start quiz if coming from upload page with flag
+  useEffect(() => {
+    if (location.state?.autoStart && !hasAutoStarted.current) {
+        if (uploadedFile || topic) {
+            console.log("🚀 Auto-starting quiz generation from upload...");
+            hasAutoStarted.current = true;
+            generateQuiz();
+        }
+    }
+  }, [location.state, uploadedFile, topic]);
+
   const generateQuiz = async () => {
     setLoading(true);
     setError(null);
@@ -27,12 +42,15 @@ export default function ExamPrep() {
     setSubmitted(false);
     setResults(null);
     
+    // Use the topic state if available, otherwise custom input
+    const topicToUse = customTopic || topic || "General";
+    
     try {
       const res = await fetch("http://127.0.0.1:8000/api/exam/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          topic: customTopic,
+          topic: topicToUse,
           file_id: uploadedFile?.file_id || null,
           num_questions: 5,
         }),
@@ -119,14 +137,14 @@ export default function ExamPrep() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      {loading && <LoadingSpinner message="🎯 Antigravity is crafting your personalized quiz..." />}
+      {loading && <LoadingSpinner message="🎯 Antigravity is crafting your personalized quiz based on your document..." />}
       {submitting && <LoadingSpinner message="📊 Grading your quiz..." />}
       
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">📝 Exam Prep</h1>
         
         {/* Topic Input and Generate Button */}
-        {!quiz && (
+        {!quiz && !loading && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <label className="block text-lg font-semibold text-gray-700 mb-2">Topic</label>
             <input
@@ -142,6 +160,9 @@ export default function ExamPrep() {
             >
               {loading ? "Generating Quiz..." : "Generate Quiz"}
             </button>
+            {uploadedFile && (
+                <p className="mt-2 text-sm text-green-600">✅ Using uploaded document: {uploadedFile.original_filename}</p>
+            )}
           </div>
         )}
 
